@@ -1,0 +1,22 @@
+{
+  "name": "psd2json",
+  "version": "1.0.0",
+  "description": "Convert PSD to JSON",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zprodev/psd2json.git"
+  },
+  "author": "zprodev <zproject.develop@gmail.com> (https://github.com/zprodev)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zprodev/psd2json/issues"
+  },
+  "homepage": "https://github.com/zprodev/psd2json#readme",
+  "devDependencies": {
+    "psd": "^3.2.0"
+  }
+}
