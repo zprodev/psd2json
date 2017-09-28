@@ -1,6 +1,6 @@
 {
   "name": "psd2json",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Convert PSD to JSON",
   "main": "index.js",
   "scripts": {
@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/zprodev/psd2json#readme",
   "devDependencies": {
-    "psd": "^3.2.0"
+    "psd": "^3.2.0",
+    "rmdir-sync": "^1.0.1"
   }
 }

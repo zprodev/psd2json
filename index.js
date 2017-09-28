@@ -1,4 +1,5 @@
 let fs = require('fs');
+let rmdirSync = require('rmdir-sync');
 let path = require("path");
 let psd = require("psd");
 
@@ -7,12 +8,25 @@ function psd2json(psdFile) {
   let psdData = psd.fromFile(psdFilePath);
   psdData.parse();
 
+  let outDirPath = "./output";
+  let outImgDirPath = "./output/img";
+
+//  rmdirSync(outDirPath);
+
+  if(!fs.existsSync(outDirPath)){
+    fs.mkdirSync(outDirPath);
+  }
+  if(!fs.existsSync(outImgDirPath)){
+    fs.mkdirSync(outImgDirPath);
+  }
+
   let queueNodes = [];
   let queueNodesIndex = [];
   let queueNodesName = [];
   let queueNodesStructure = [];
 
   let rootNode = psdData.tree();
+
   queueNodes.push(rootNode._children);
   queueNodesIndex.push(0);
   queueNodesName.push(rootNode.name);
@@ -21,6 +35,7 @@ function psd2json(psdFile) {
     "children" : []
   };
   queueNodesStructure.push(psdStructure);
+  
   queueLoop: while(0 < queueNodes.length){
     let queueIndex = queueNodes.length - 1;
     let nodes = queueNodes[queueIndex];
@@ -50,7 +65,7 @@ function psd2json(psdFile) {
           "name" : node.name
         };
         nodesStructure.children.push(structure);
-        node.layer.image.saveAsPng("./output/" + saveName.replace( "/" , "_" ) + ".png");
+        node.layer.image.saveAsPng( outImgDirPath + "/" + saveName.replace( "/" , "_" ) + ".png");
       }
     }
   
@@ -59,8 +74,9 @@ function psd2json(psdFile) {
     queueNodesName.pop();
     queueNodesStructure.pop();
   }
+
   let outFileName = psdFile.substr(0, psdFile.indexOf("."));
-  fs.writeFile("./output/" + outFileName + ".json", JSON.stringify(psdStructure) , function (err) {
+  fs.writeFile(outDirPath + "/" + outFileName + ".json", JSON.stringify(psdStructure) , function (err) {
     if(err){
       console.log(err);
     }else{
