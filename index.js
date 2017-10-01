@@ -5,43 +5,45 @@ let psd = require("psd");
 
 function psd2json(psdFile) {
   let psdFilePath = path.resolve(psdFile);
-  let psdData = psd.fromFile(psdFilePath);
-  psdData.parse();
+  let psdFileName = path.basename(psdFilePath, path.extname(psdFilePath));
 
-  let outDirPath = "./output";
-  let outImgDirPath = "./output/img";
-
-//  rmdirSync(outDirPath);
-
+  // initialize output directory.
+  let outDirPath = path.resolve("output");
+  rmdirSync(outDirPath);
   if(!fs.existsSync(outDirPath)){
     fs.mkdirSync(outDirPath);
   }
-  if(!fs.existsSync(outImgDirPath)){
-    fs.mkdirSync(outImgDirPath);
-  }
+
+  // get root node.
+  let psdData = psd.fromFile(psdFilePath);
+  psdData.parse();
+  let rootNode = psdData.tree();
 
   let queueNodes = [];
   let queueNodesIndex = [];
   let queueNodesName = [];
   let queueNodesStructure = [];
 
-  let rootNode = psdData.tree();
-
   queueNodes.push(rootNode._children);
   queueNodesIndex.push(0);
-  queueNodesName.push(rootNode.name);
+  queueNodesName.push(undefined);
   let psdStructure = {
-    "name" : rootNode.name,
     "children" : []
   };
   queueNodesStructure.push(psdStructure);
-  
+
   queueLoop: while(0 < queueNodes.length){
     let queueIndex = queueNodes.length - 1;
     let nodes = queueNodes[queueIndex];
     let nodesIndex = queueNodesIndex[queueIndex];
     let nodesName = queueNodesName[queueIndex];
     let nodesStructure = queueNodesStructure[queueIndex];
+
+    if(nodesName === undefined){
+      nodesName = "";
+    }else{
+      nodesName += "_";
+    }
   
     nodeLoop: while(nodesIndex < nodes.length){
       let node = nodes[nodesIndex];
@@ -51,7 +53,7 @@ function psd2json(psdFile) {
         queueNodes.push(node._children);
         queueNodesIndex[queueIndex] = nodesIndex;
         queueNodesIndex.push(0);
-        queueNodesName.push(nodesName + "_" + node.name);
+        queueNodesName.push(nodesName + node.name);
         let structure = {
           "name" : node.name,
           "children" : []
@@ -60,12 +62,14 @@ function psd2json(psdFile) {
         queueNodesStructure.push(structure);
         continue queueLoop;
       }else{
-        let saveName = nodesName + "_" + node.name;
         let structure = {
-          "name" : node.name
+          "name" : node.name,
+          "x" : node.layer.left,
+          "y" : node.layer.top,
+          "width" : node.layer.width,
+          "height" : node.layer.height
         };
         nodesStructure.children.push(structure);
-        node.layer.image.saveAsPng( outImgDirPath + "/" + saveName.replace( "/" , "_" ) + ".png");
       }
     }
   
@@ -75,13 +79,11 @@ function psd2json(psdFile) {
     queueNodesStructure.pop();
   }
 
-  let outFileName = psdFile.substr(0, psdFile.indexOf("."));
-  fs.writeFile(outDirPath + "/" + outFileName + ".json", JSON.stringify(psdStructure) , function (err) {
+  fs.writeFile(outDirPath + "/" + psdFileName + ".json", JSON.stringify(psdStructure.children) , function (err) {
     if(err){
       console.log(err);
-    }else{
-      console.log("success");
     }
   });
 }
-psd2json(process.argv[2]);
+
+module.exports = psd2json;
