@@ -1,55 +1,56 @@
-let fs = require('fs');
-let rmdirSync = require('rmdir-sync');
-let path = require("path");
-let psd = require("psd");
+const fs = require("fs");
+const path = require("path");
+const psd = require("psd");
 
-function psd2json(psdFile) {
-  let psdFilePath = path.resolve(psdFile);
-  let psdFileName = path.basename(psdFilePath, path.extname(psdFilePath));
+function psd2json(psdFile, outDir) {
+  const psdFilePath = path.resolve(psdFile);
+  const psdFileName = path.basename(psdFilePath, path.extname(psdFilePath));
 
-  // initialize output directory.
-  let outDirPath = path.resolve("output");
-  rmdirSync(outDirPath);
-  if(!fs.existsSync(outDirPath)){
-    fs.mkdirSync(outDirPath);
+  let outDirPath;
+  if (outDir) {
+    outDirPath = path.resolve(outDir);
+  } else {
+    outDirPath = path.dirname(psdFilePath);
   }
 
-  // get root node.
-  let psdData = psd.fromFile(psdFilePath);
-  psdData.parse();
-  let rootNode = psdData.tree();
+  const outJsonPath = path.join(outDirPath, psdFileName + ".json");
 
-  let queueNodes = [];
-  let queueNodesIndex = [];
-  let queueNodesName = [];
-  let queueNodesStructure = [];
+  // get root node.
+  const psdData = psd.fromFile(psdFilePath);
+  psdData.parse();
+  const rootNode = psdData.tree();
+
+  const queueNodes = [];
+  const queueNodesIndex = [];
+  const queueNodesName = [];
+  const queueNodesStructure = [];
 
   queueNodes.push(rootNode._children);
   queueNodesIndex.push(0);
   queueNodesName.push(undefined);
-  let psdStructure = {
+  const psdStructure = {
     "children" : []
   };
   queueNodesStructure.push(psdStructure);
 
-  queueLoop: while(0 < queueNodes.length){
-    let queueIndex = queueNodes.length - 1;
-    let nodes = queueNodes[queueIndex];
+  queueLoop: while (0 < queueNodes.length) {
+    const queueIndex = queueNodes.length - 1;
+    const nodes = queueNodes[queueIndex];
+    const nodesStructure = queueNodesStructure[queueIndex];
     let nodesIndex = queueNodesIndex[queueIndex];
     let nodesName = queueNodesName[queueIndex];
-    let nodesStructure = queueNodesStructure[queueIndex];
-
-    if(nodesName === undefined){
+    
+    if (nodesName === undefined) {
       nodesName = "";
-    }else{
+    } else {
       nodesName += "_";
     }
   
-    nodeLoop: while(nodesIndex < nodes.length){
+    while (nodesIndex < nodes.length) {
       let node = nodes[nodesIndex];
       nodesIndex++;
-      if(node.layer.visible === false) continue;
-      if(node.type === "group"){
+      if (node.layer.visible === false) continue;
+      if (node.type === "group") {
         queueNodes.push(node._children);
         queueNodesIndex[queueIndex] = nodesIndex;
         queueNodesIndex.push(0);
@@ -61,7 +62,7 @@ function psd2json(psdFile) {
         nodesStructure.children.push(structure);
         queueNodesStructure.push(structure);
         continue queueLoop;
-      }else{
+      } else {
         let structure = {
           "name" : node.name,
           "x" : node.layer.left,
@@ -79,10 +80,14 @@ function psd2json(psdFile) {
     queueNodesStructure.pop();
   }
 
-  fs.writeFile(outDirPath + "/" + psdFileName + ".json", JSON.stringify(psdStructure.children) , function (err) {
-    if(err){
-      console.log(err);
-    }
+  // make output directory.
+  if (!fs.existsSync(outDirPath)) {
+    fs.mkdirSync(outDirPath);
+  }
+
+  // make json.
+  fs.writeFile(outJsonPath, JSON.stringify(psdStructure.children) , function (err) {
+    if (err) console.log(err);
   });
 }
 
