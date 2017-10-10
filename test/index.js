@@ -16,7 +16,7 @@ assert.equal(
 );
 
 psd2json(psdFilePath, outDir);
-assert.e.equal(
+assert.equal(
   testData,
   fs.readFileSync(path.join(outDir, "sample.json"), "utf-8"),
   "Output JSON data is invalid"
