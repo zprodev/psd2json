@@ -18,6 +18,14 @@
     "url": "https://github.com/zprodev/psd2json/issues"
   },
   "homepage": "https://github.com/zprodev/psd2json#readme",
+  "keywords": [
+    "psd",
+    "layers",
+    "layout",
+    "parse",
+    "jsx",
+    "json"
+  ],
   "devDependencies": {
     "psd": "^3.2.0",
     "eslint": "^4.8.0"
