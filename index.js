@@ -86,9 +86,7 @@ function psd2json(psdFile, outDir) {
   }
 
   // make json.
-  fs.writeFile(outJsonPath, JSON.stringify(psdStructure.children) , function (err) {
-    if (err) console.log(err);
-  });
+  fs.writeFileSync(outJsonPath, JSON.stringify(psdStructure.children));
 }
 
 module.exports = psd2json;
