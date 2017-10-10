@@ -2,6 +2,11 @@ const fs = require("fs");
 const path = require("path");
 const psd = require("psd");
 
+/**
+ * Output PSD layout to JSON
+ * @param {string} psdFile Relative path or absolute path of PSD file
+ * @param {string} [outDir] Set this when outputting to a different directory from the PSD file
+ */
 function psd2json(psdFile, outDir) {
   const psdFilePath = path.resolve(psdFile);
   const psdFileName = path.basename(psdFilePath, path.extname(psdFilePath));
