@@ -4,9 +4,9 @@
   "description": "Convert PSD to JSON",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint index.js",
-    "lint-fix": "eslint index.js --fix"
+    "test": "node ./test",
+    "lint": "eslint index.js && eslint ./test",
+    "lint-fix": "eslint index.js --fix && eslint ./test --fix"
   },
   "repository": {
     "type": "git",

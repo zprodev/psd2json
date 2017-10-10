@@ -1,4 +1,4 @@
+.vscode
 node_modules/
-package-lock.json
-settings.json
-output/
+test/sample.json
+test/output
