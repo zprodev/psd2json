@@ -26,8 +26,10 @@
     "jsx",
     "json"
   ],
+  "dependencies": {
+    "psd": "^3.2.0"
+  },
   "devDependencies": {
-    "psd": "^3.2.0",
     "eslint": "^4.8.0"
   }
 }
