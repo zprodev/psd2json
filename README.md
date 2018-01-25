@@ -7,7 +7,7 @@
 Convart PSD layout to JSON.
 
 ![01.png](https://raw.githubusercontent.com/zprodev/psd2json/master/docs/img/01.png)
-![02.png](https://raw.githubusercontent.com/zprodev/psd2json/master/docs/img/01.png)
+![02.png](https://raw.githubusercontent.com/zprodev/psd2json/master/docs/img/02.png)
 
 # Usage
 
