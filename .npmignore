@@ -1,0 +1,10 @@
+.vscode
+node_modules/
+test/sample.json
+test/output
+
+# npm only
+.travis.yml
+.eslintrc.json
+docs/
+test/
