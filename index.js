@@ -1,6 +1,6 @@
-const fs = require("fs");
-const path = require("path");
-const psd = require("psd");
+const fs = require('fs');
+const path = require('path');
+const psd = require('psd');
 
 /**
  * Output PSD layout to JSON
@@ -18,7 +18,7 @@ function psd2json(psdFile, outDir) {
     outDirPath = path.dirname(psdFilePath);
   }
 
-  const outJsonPath = path.join(outDirPath, psdFileName + ".json");
+  const outJsonPath = path.join(outDirPath, psdFileName + '.json');
 
   // get root node.
   const psdData = psd.fromFile(psdFilePath);
@@ -34,7 +34,7 @@ function psd2json(psdFile, outDir) {
   queueNodesIndex.push(0);
   queueNodesName.push(undefined);
   const psdStructure = {
-    "children" : []
+    'group' : []
   };
   queueNodesStructure.push(psdStructure);
 
@@ -46,36 +46,36 @@ function psd2json(psdFile, outDir) {
     let nodesName = queueNodesName[queueIndex];
     
     if (nodesName === undefined) {
-      nodesName = "";
+      nodesName = '';
     } else {
-      nodesName += "_";
+      nodesName += '_';
     }
   
     while (nodesIndex < nodes.length) {
       let node = nodes[nodesIndex];
       nodesIndex++;
       if (node.layer.visible === false) continue;
-      if (node.type === "group") {
+      if (node.type === 'group') {
         queueNodes.push(node._children);
         queueNodesIndex[queueIndex] = nodesIndex;
         queueNodesIndex.push(0);
         queueNodesName.push(nodesName + node.name);
         let structure = {
-          "name" : node.name,
-          "children" : []
+          'name' : node.name,
+          'group' : []
         };
-        nodesStructure.children.push(structure);
+        nodesStructure.group.push(structure);
         queueNodesStructure.push(structure);
         continue queueLoop;
       } else {
         let structure = {
-          "name" : node.name,
-          "x" : node.layer.left,
-          "y" : node.layer.top,
-          "width" : node.layer.width,
-          "height" : node.layer.height
+          'name' : node.name,
+          'x' : node.layer.left,
+          'y' : node.layer.top,
+          'width' : node.layer.width,
+          'height' : node.layer.height
         };
-        nodesStructure.children.push(structure);
+        nodesStructure.group.push(structure);
       }
     }
   
@@ -91,7 +91,7 @@ function psd2json(psdFile, outDir) {
   }
 
   // make json.
-  fs.writeFileSync(outJsonPath, JSON.stringify(psdStructure.children));
+  fs.writeFileSync(outJsonPath, JSON.stringify(psdStructure.group));
 }
 
 module.exports = psd2json;

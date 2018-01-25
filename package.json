@@ -4,7 +4,7 @@
   "description": "Convert PSD to JSON",
   "main": "index.js",
   "scripts": {
-    "test": "node ./test",
+    "test": "npm run lint && mocha",
     "lint": "eslint index.js && eslint ./test",
     "lint-fix": "eslint index.js --fix && eslint ./test --fix"
   },
@@ -30,6 +30,7 @@
     "psd": "^3.2.0"
   },
   "devDependencies": {
-    "eslint": "^4.8.0"
+    "eslint": "^4.8.0",
+    "mocha": "^4.0.1"
   }
 }
