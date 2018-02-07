@@ -52,7 +52,7 @@ function psd2json(psdFile, outDir) {
     }
   
     while (nodesIndex < nodes.length) {
-      let node = nodes[nodesIndex];
+      const node = nodes[nodesIndex];
       nodesIndex++;
       if (node.layer.visible === false) continue;
       if (node.type === 'group') {
@@ -60,7 +60,7 @@ function psd2json(psdFile, outDir) {
         queueNodesIndex[queueIndex] = nodesIndex;
         queueNodesIndex.push(0);
         queueNodesName.push(nodesName + node.name);
-        let structure = {
+        const structure = {
           'name' : node.name,
           'group' : []
         };
@@ -68,7 +68,7 @@ function psd2json(psdFile, outDir) {
         queueNodesStructure.push(structure);
         continue queueLoop;
       } else {
-        let structure = {
+        const structure = {
           'name' : node.name,
           'x' : node.layer.left,
           'y' : node.layer.top,
