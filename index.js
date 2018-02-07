@@ -1,13 +1,16 @@
 const fs = require('fs');
 const path = require('path');
 const psd = require('psd');
+const mkdirp = require('mkdirp');
 
 /**
  * Output PSD layout to JSON
  * @param {string} psdFile Relative path or absolute path of PSD file
- * @param {string} [outDir] Set this when outputting to a different directory from the PSD file
+ * @param {Object} [options] options
+ * @param {string} [options.outJsonDir] Set to output files
+ * @param {string} [options.outImgDir] Set to output files
  */
-function psd2json(psdFile, outDir) {
+function psd2json(psdFile, options = {}) {
   const psdFilePath = path.resolve(psdFile);
   const psdFileName = path.basename(psdFilePath, path.extname(psdFilePath));
 
@@ -39,7 +42,7 @@ function psd2json(psdFile, outDir) {
     if (nodesName === undefined) {
       nodesName = '';
     } else {
-      nodesName += '_';
+      nodesName += path.sep;
     }
   
     while (nodesIndex < nodes.length) {
@@ -59,6 +62,11 @@ function psd2json(psdFile, outDir) {
         queueNodesStructure.push(structure);
         continue queueLoop;
       } else {
+        if (options.outImgDir) {
+          const outImgDirPath = path.resolve(options.outImgDir, psdFileName, nodesName);
+          mkdirp.sync(outImgDirPath);
+          node.layer.image.saveAsPng(path.join(outImgDirPath, node.name + '.png'));
+        }
         const structure = {
           'name' : node.name,
           'x' : node.layer.left,
@@ -78,12 +86,12 @@ function psd2json(psdFile, outDir) {
 
   const outJsonData = JSON.stringify(psdStructure.group);
 
-  if (outDir) {
-    const outDirPath = path.resolve(outDir);
-    const outJsonPath = path.join(outDirPath, psdFileName + '.json');
+  if (options.outJsonDir) {
+    const outJsonDirPath = path.resolve(options.outJsonDir);
+    const outJsonPath = path.join(outJsonDirPath, psdFileName + '.json');
     // make output directory.
-    if (!fs.existsSync(outDirPath)) {
-      fs.mkdirSync(outDirPath);
+    if (!fs.existsSync(outJsonDirPath)) {
+      fs.mkdirSync(outJsonDirPath);
     }
     // output file.
     fs.writeFileSync(outJsonPath, outJsonData);
