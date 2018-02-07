@@ -22,8 +22,8 @@ Import this module to your source code and call like below.
 ```
 var psd2json = require('psd2json');
 
-psd2json('./target.psd');              // Output of ./target.json
-psd2json('./target.psd', './outdir');  // Output of ./outdir/target.json
+var jsonData = psd2json('./target.psd');              // return JSON
+var jsonData = psd2json('./target.psd', './outdir');  // return JSON and output /outdir/target.json
 ```
 
 # License
