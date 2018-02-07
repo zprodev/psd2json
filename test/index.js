@@ -13,9 +13,40 @@ describe('Passing a file path.', function() {
   const PSD_FILE_PATH = path.join(__dirname, PSD_FILE_NAME);
   const OUT_FILE_PATH = path.join(__dirname, OUTPUT_FILE_NAME);
 
+  let returnData = '';
+
   before(function(done) {
     fs.unlink(OUT_FILE_PATH, () => {
-      psd2json(PSD_FILE_PATH);
+      returnData = psd2json(PSD_FILE_PATH);
+      done();
+    });
+  });
+
+  it('File is not output.', function() {
+    assert.throws(() => {
+      fs.exist.statSync(OUT_FILE_PATH);
+    });
+  });
+
+  it('Correct return JSON.', function() {
+    assert.equal(
+      OUTPUT_DATA,
+      returnData
+    );
+  });
+});
+
+describe('Passing file path and directory path.', function() {
+
+  const PSD_FILE_PATH = path.join(__dirname, PSD_FILE_NAME);
+  const OUTPUT_DIR = path.join(__dirname, 'output');
+  const OUT_FILE_PATH = path.join(OUTPUT_DIR, OUTPUT_FILE_NAME);
+
+  let returnData = '';
+
+  before(function(done) {
+    fs.unlink(OUT_FILE_PATH, () => {
+      returnData = psd2json(PSD_FILE_PATH, OUTPUT_DIR);
       done();
     });
   });
@@ -30,29 +61,11 @@ describe('Passing a file path.', function() {
       fs.readFileSync(OUT_FILE_PATH, 'utf-8')
     );
   });
-});
 
-describe('Passing file path and directory path.', function() {
-
-  const PSD_FILE_PATH = path.join(__dirname, PSD_FILE_NAME);
-  const OUTPUT_DIR = path.join(__dirname, 'output');
-  const OUT_FILE_PATH = path.join(OUTPUT_DIR, OUTPUT_FILE_NAME);
-
-  before(function(done) {
-    fs.unlink(OUT_FILE_PATH, () => {
-      psd2json(PSD_FILE_PATH, OUTPUT_DIR);
-      done();
-    });
-  });
-
-  it('Correct output path.', function() {
-    assert.ok(fs.statSync(OUT_FILE_PATH));
-  });
-
-  it('Correct output JSON.', function() {
+  it('Correct return JSON.', function() {
     assert.equal(
       OUTPUT_DATA,
-      fs.readFileSync(OUT_FILE_PATH, 'utf-8')
+      returnData
     );
   });
 });

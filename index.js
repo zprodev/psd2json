@@ -11,15 +11,6 @@ function psd2json(psdFile, outDir) {
   const psdFilePath = path.resolve(psdFile);
   const psdFileName = path.basename(psdFilePath, path.extname(psdFilePath));
 
-  let outDirPath;
-  if (outDir) {
-    outDirPath = path.resolve(outDir);
-  } else {
-    outDirPath = path.dirname(psdFilePath);
-  }
-
-  const outJsonPath = path.join(outDirPath, psdFileName + '.json');
-
   // get root node.
   const psdData = psd.fromFile(psdFilePath);
   psdData.parse();
@@ -85,13 +76,20 @@ function psd2json(psdFile, outDir) {
     queueNodesStructure.pop();
   }
 
-  // make output directory.
-  if (!fs.existsSync(outDirPath)) {
-    fs.mkdirSync(outDirPath);
+  const outJsonData = JSON.stringify(psdStructure.group);
+
+  if (outDir) {
+    const outDirPath = path.resolve(outDir);
+    const outJsonPath = path.join(outDirPath, psdFileName + '.json');
+    // make output directory.
+    if (!fs.existsSync(outDirPath)) {
+      fs.mkdirSync(outDirPath);
+    }
+    // output file.
+    fs.writeFileSync(outJsonPath, outJsonData);
   }
 
-  // make json.
-  fs.writeFileSync(outJsonPath, JSON.stringify(psdStructure.group));
+  return outJsonData;
 }
 
 module.exports = psd2json;
