@@ -38,6 +38,47 @@ describe('Passing a file path.', function() {
   });
 });
 
+describe('Passing file path and directory path.', function () {
+
+  const PSD_FILE_PATH = path.join(__dirname, PSD_FILE_NAME);
+  const OUTPUT_DIR = path.join(__dirname, 'output');
+  const OUT_FILE_PATH = path.join(OUTPUT_DIR, OUTPUT_FILE_NAME);
+
+  let returnData = '';
+
+  before(function (done) {
+    rimraf.sync(OUTPUT_DIR);
+    returnData = psd2json(PSD_FILE_PATH, OUTPUT_DIR);
+    done();
+  });
+
+  it('Correct output path.', function () {
+    assert.ok(fs.statSync(OUT_FILE_PATH));
+    assert.ok(fs.statSync(path.join(OUTPUT_DIR, FILE_NAME, 'background', 'ground.png')));
+    assert.ok(fs.statSync(path.join(OUTPUT_DIR, FILE_NAME, 'background', 'object.png')));
+    assert.ok(fs.statSync(path.join(OUTPUT_DIR, FILE_NAME, 'background', 'sky.png')));
+    assert.ok(fs.statSync(path.join(OUTPUT_DIR, FILE_NAME, 'field', 'player.png')));
+    assert.ok(fs.statSync(path.join(OUTPUT_DIR, FILE_NAME, 'ui', 'footer', 'back.png')));
+    assert.ok(fs.statSync(path.join(OUTPUT_DIR, FILE_NAME, 'ui', 'footer', 'button1.png')));
+    assert.ok(fs.statSync(path.join(OUTPUT_DIR, FILE_NAME, 'ui', 'footer', 'button2.png')));
+    assert.ok(fs.statSync(path.join(OUTPUT_DIR, FILE_NAME, 'ui', 'footer', 'button3.png')));
+  });
+
+  it('Correct output JSON.', function () {
+    assert.equal(
+      OUTPUT_DATA,
+      fs.readFileSync(OUT_FILE_PATH, 'utf-8')
+    );
+  });
+
+  it('Correct return JSON.', function () {
+    assert.equal(
+      OUTPUT_DATA,
+      returnData
+    );
+  });
+});
+
 describe('Passing file path and JSON directory path.', function() {
 
   const PSD_FILE_PATH = path.join(__dirname, PSD_FILE_NAME);

@@ -6,13 +6,27 @@ const mkdirp = require('mkdirp');
 /**
  * Output PSD layout to JSON
  * @param {string} psdFile Relative path or absolute path of PSD file
- * @param {Object} [options] options
+ * @param {string|Object} [options] directory path or options
  * @param {string} [options.outJsonDir] Set to output files
  * @param {string} [options.outImgDir] Set to output files
  */
 function psd2json(psdFile, options = {}) {
   const psdFilePath = path.resolve(psdFile);
   const psdFileName = path.basename(psdFilePath, path.extname(psdFilePath));
+
+  let outImgDir = '';
+  let outJsonDir = '';
+  if (typeof options === 'string') {
+    outImgDir = options;
+    outJsonDir = options;
+  } else {
+    if (options.outImgDir) {
+      outImgDir = options.outImgDir;
+    }
+    if (options.outJsonDir) {
+      outJsonDir = options.outJsonDir;
+    }
+  }
 
   // get root node.
   const psdData = psd.fromFile(psdFilePath);
@@ -62,8 +76,8 @@ function psd2json(psdFile, options = {}) {
         queueNodesStructure.push(structure);
         continue queueLoop;
       } else {
-        if (options.outImgDir) {
-          const outImgDirPath = path.resolve(options.outImgDir, psdFileName, nodesName);
+        if (outImgDir) {
+          const outImgDirPath = path.resolve(outImgDir, psdFileName, nodesName);
           mkdirp.sync(outImgDirPath);
           node.layer.image.saveAsPng(path.join(outImgDirPath, node.name + '.png'));
         }
@@ -86,8 +100,8 @@ function psd2json(psdFile, options = {}) {
 
   const outJsonData = JSON.stringify(psdStructure.group);
 
-  if (options.outJsonDir) {
-    const outJsonDirPath = path.resolve(options.outJsonDir);
+  if (outJsonDir) {
+    const outJsonDirPath = path.resolve(outJsonDir);
     const outJsonPath = path.join(outJsonDirPath, psdFileName + '.json');
     // make output directory.
     if (!fs.existsSync(outJsonDirPath)) {
