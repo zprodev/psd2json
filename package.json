@@ -33,6 +33,6 @@
   "devDependencies": {
     "eslint": "^5.12.1",
     "mocha": "^6.1.4",
-    "rimraf": "^2.6.3"
+    "rimraf": "^3.0.0"
   }
 }
