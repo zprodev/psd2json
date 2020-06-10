@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "eslint": "^6.7.1",
-    "mocha": "^6.1.4",
+    "mocha": "^8.0.0",
     "rimraf": "^3.0.0"
   }
 }
